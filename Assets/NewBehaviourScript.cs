@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class NewBehaviourScript : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public int damage = 20;
+    public int hp = 40;
+    public int result;
+    public string wepon = "ak47";
+
+   public void Start()
     {
-        
+        result = hp - damage;
+        Debug.Log("result: "+ result);
+    }
+   public void Update()
+    {
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
