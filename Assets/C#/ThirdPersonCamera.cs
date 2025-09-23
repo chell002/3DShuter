@@ -8,8 +8,9 @@ public class ThirdPersonCamera : MonoBehaviour
     public float maxViewAngle = 60f;
     public float minViewAngle = -60f;
     private Transform trCam;
-    public Vector3 offset;
+    private Vector3 offset;
     [SerializeField] private float transitionSpeed = 9f;
+    [SerializeField] private float angleRotate = 45f;
     // Приватные переменные
     private float rotationX = 0f;
     private float rotationY = 0f;
@@ -39,7 +40,7 @@ public class ThirdPersonCamera : MonoBehaviour
     private void RotateCamera(Vector3 input)
     {
         Quaternion newRot = Quaternion.Euler(input.x, input.y, 0);
-        trCam.rotation = Quaternion.Slerp(trCam.rotation, newRot, Time.smoothDeltaTime * transitionSpeed);
+        trCam.rotation = Quaternion.Slerp(trCam.rotation, newRot, Time.smoothDeltaTime * angleRotate);
     }
 
     public void FollowCamera()
