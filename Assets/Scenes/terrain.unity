@@ -139,6 +139,10 @@ PrefabInstance:
       value: person
       objectReference: {fileID: 0}
     - target: {fileID: 3821541089187484352, guid: 77a246563383c6a458e939e7f04d4b82, type: 3}
+      propertyPath: speed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3821541089187484352, guid: 77a246563383c6a458e939e7f04d4b82, type: 3}
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 1181714449}

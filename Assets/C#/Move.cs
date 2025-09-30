@@ -6,6 +6,7 @@ public class Move : MonoBehaviour
 
     // ѕубличные переменные дл€ настройки в инспекторе Unity
     public Transform cameraTransform; // ѕеретащите сюда Transform объекта камеры
+    Transform tr;
     public float moveSpeed = 5f;
     public float runSpeed = 5f;
     public float sprintSpeed = 8f;
@@ -15,7 +16,16 @@ public class Move : MonoBehaviour
     private Rigidbody rb;
     private bool isGrounded;
     bool isSprint;
+    private float timeFoce = 0.5f;
+    private bool isSlider;
+    public float speed = 20;
+    private float lastClickTime;
+    private float doubleClickThreshold = 0.3f;
 
+    private void Awake()
+    {
+        tr = GetComponent<Transform>();
+    }
     void Start()
     {
         // ѕолучаем ссылку на компонент Rigidbody
@@ -28,8 +38,56 @@ public class Move : MonoBehaviour
         // ќбработка прыжка
         Jamping();
         Sprinting();
+        ResetForce();
+        Forcing();
     }
+    // Ётот метод вызываетс€ на фиксированном временном интервале дл€ физических расчетов
+    void FixedUpdate()
+    {
+        // ѕолучаем ввод с клавиатуры
+        // —оздаем вектор, основанный на вводе, но в плоскости мира (без учета вращени€)
+        Vector3 movementInput = InputAxis();
 
+        // ѕолучаем вектор направлени€ камеры, игнориру€ ее наклон по оси Y
+        // Vector3.ProjectOnPlane проецирует вектор на плоскость, нормаль которой Vector3.up
+        Vector3 desiredMoveDirection = GetDirectionCamera(movementInput);
+
+        // ѕримен€ем скорость к Rigidbody в новом направлении
+        Moving(desiredMoveDirection);
+
+        // ѕоворот персонажа в направлении движени€ (необ€зательно, но полезно)
+        Rotating(desiredMoveDirection);
+
+    }
+    private void DubleShift()
+    {
+        float timeSinceLastClick = Time.time - lastClickTime;
+        if (timeSinceLastClick <= doubleClickThreshold)
+        {
+            timeFoce = 0.5f;
+            isSlider = true;
+        }
+        lastClickTime = Time.time;
+    }
+    private void ResetForce()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            DubleShift();
+        }
+    }
+    private void Forcing()
+    {
+        timeFoce -= Time.deltaTime;
+        isSlider = timeFoce <= 0 ? false : true;
+
+        if (isSlider)
+        {
+            Vector3 target = tr.position + new Vector3(0, 0, 2);
+            tr.position = Vector3.MoveTowards(tr.position, target, speed * 6 * Time.deltaTime);
+        }
+
+    }
     private void Sprinting()
     {
         if (isGrounded)
@@ -47,24 +105,6 @@ public class Move : MonoBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false;
         }
-    }
-
-    // Ётот метод вызываетс€ на фиксированном временном интервале дл€ физических расчетов
-    void FixedUpdate()
-    {
-        // ѕолучаем ввод с клавиатуры
-        // —оздаем вектор, основанный на вводе, но в плоскости мира (без учета вращени€)
-        Vector3 movementInput = InputAxis();
-
-        // ѕолучаем вектор направлени€ камеры, игнориру€ ее наклон по оси Y
-        // Vector3.ProjectOnPlane проецирует вектор на плоскость, нормаль которой Vector3.up
-        Vector3 desiredMoveDirection = GetDirectionCamera(movementInput);
-
-        // ѕримен€ем скорость к Rigidbody в новом направлении
-        Moving(desiredMoveDirection);
-
-        // ѕоворот персонажа в направлении движени€ (необ€зательно, но полезно)
-        Rotating(desiredMoveDirection);
     }
 
     private void Rotating(Vector3 desiredMoveDirection)
