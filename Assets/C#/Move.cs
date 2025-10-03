@@ -11,7 +11,10 @@ public class Move : MonoBehaviour
     public float runSpeed = 5f;
     public float sprintSpeed = 8f;
     public float jumpForce = 8f;
-    
+    public float force = 8f;
+    Vector3 desiredMoveDirection;
+    Vector3 cameraForward;
+
     // Приватные переменные
     private Rigidbody rb;
     private bool isGrounded;
@@ -19,6 +22,7 @@ public class Move : MonoBehaviour
     private float timeFoce = 0.5f;
     private bool isSlider;
     public float speed = 20;
+    public float rotate = 45;
     private float lastClickTime;
     private float doubleClickThreshold = 0.3f;
 
@@ -40,6 +44,7 @@ public class Move : MonoBehaviour
         Sprinting();
         ResetForce();
         Forcing();
+        DubleShift();
     }
     // Этот метод вызывается на фиксированном временном интервале для физических расчетов
     void FixedUpdate()
@@ -56,35 +61,37 @@ public class Move : MonoBehaviour
         Moving(desiredMoveDirection);
 
         // Поворот персонажа в направлении движения (необязательно, но полезно)
-        Rotating(desiredMoveDirection);
+        Rotating(cameraForward);
+
 
     }
     private void DubleShift()
     {
-        float timeSinceLastClick = Time.time - lastClickTime;
-        if (timeSinceLastClick <= doubleClickThreshold)
+        timeFoce -= Time.time;
+        if (timeFoce <= Time.time)
         {
-            timeFoce = 0.5f;
+            timeFoce = Time.time + 1f;
             isSlider = true;
         }
-        lastClickTime = Time.time;
+
     }
     private void ResetForce()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.LeftShift)&& isSlider)
         {
-            DubleShift();
+            rb.AddRelativeForce(Vector3.forward * force, ForceMode.Impulse);
+            isSlider = false;
         }
     }
     private void Forcing()
     {
-        timeFoce -= Time.deltaTime;
+
         isSlider = timeFoce <= 0 ? false : true;
 
         if (isSlider)
         {
-            Vector3 target = tr.position + new Vector3(0, 0, 2);
-            tr.position = Vector3.MoveTowards(tr.position, target, speed * 6 * Time.deltaTime);
+       
+
         }
 
     }
@@ -109,25 +116,23 @@ public class Move : MonoBehaviour
 
     private void Rotating(Vector3 desiredMoveDirection)
     {
-        if (desiredMoveDirection != Vector3.zero)
-        {
-            Quaternion toRotation = Quaternion.LookRotation(desiredMoveDirection, Vector3.up);
-            transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, Time.fixedDeltaTime * 10f);
-        }
+        Quaternion toRotation = Quaternion.LookRotation(desiredMoveDirection, Vector3.up);
+        Quaternion r = Quaternion.Slerp(rb.rotation, toRotation, Time.fixedDeltaTime * rotate);
+        rb.MoveRotation(r);
     }
 
     private void Moving(Vector3 desiredMoveDirection)
     {
-        rb.velocity = new Vector3(desiredMoveDirection.x * moveSpeed, rb.velocity.y, desiredMoveDirection.z * moveSpeed);
+        rb.MovePosition(rb.position + desiredMoveDirection * moveSpeed * Time.deltaTime);
     }
 
     private Vector3 GetDirectionCamera(Vector3 movementInput)
     {
-        Vector3 cameraForward = Vector3.ProjectOnPlane(cameraTransform.forward, Vector3.up).normalized;
+        cameraForward = Vector3.ProjectOnPlane(cameraTransform.forward, Vector3.up).normalized;
         Vector3 cameraRight = Vector3.ProjectOnPlane(cameraTransform.right, Vector3.up).normalized;
 
         // Вычисляем желаемое направление движения на основе направления камеры
-        Vector3 desiredMoveDirection = cameraForward * movementInput.z + cameraRight * movementInput.x;
+        desiredMoveDirection = cameraForward * movementInput.z + cameraRight * movementInput.x;
         return desiredMoveDirection;
     }
 
