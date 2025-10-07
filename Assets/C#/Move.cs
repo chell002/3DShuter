@@ -14,6 +14,7 @@ public class Move : MonoBehaviour
     public float force = 8f;
     Vector3 desiredMoveDirection;
     Vector3 cameraForward;
+    public float intervalForce = 3f;
 
     // Приватные переменные
     private Rigidbody rb;
@@ -41,10 +42,8 @@ public class Move : MonoBehaviour
     {
         // Обработка прыжка
         Jamping();
-        Sprinting();
         ResetForce();
-        Forcing();
-        DubleShift();
+        TimeForce();
     }
     // Этот метод вызывается на фиксированном временном интервале для физических расчетов
     void FixedUpdate()
@@ -65,13 +64,14 @@ public class Move : MonoBehaviour
 
 
     }
-    private void DubleShift()
+    private void TimeForce()
     {
-        timeFoce -= Time.time;
+
         if (timeFoce <= Time.time)
         {
-            timeFoce = Time.time + 1f;
+            timeFoce = Time.time + intervalForce;
             isSlider = true;
+            print("time " + isSlider);
         }
 
     }
@@ -80,21 +80,11 @@ public class Move : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftShift)&& isSlider)
         {
             rb.AddRelativeForce(Vector3.forward * force, ForceMode.Impulse);
+            print("force " + isSlider);
             isSlider = false;
         }
     }
-    private void Forcing()
-    {
-
-        isSlider = timeFoce <= 0 ? false : true;
-
-        if (isSlider)
-        {
-       
-
-        }
-
-    }
+ 
     private void Sprinting()
     {
         if (isGrounded)
