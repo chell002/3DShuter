@@ -77,7 +77,7 @@ public class Move : MonoBehaviour
     }
     private void ResetForce()
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift)&& isSlider)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && isSlider)
         {
             rb.AddRelativeForce(Vector3.forward * force, ForceMode.Impulse);
             print("force " + isSlider);
