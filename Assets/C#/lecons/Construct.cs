@@ -8,6 +8,8 @@ public class Construct : MonoBehaviour
     public TextMeshProUGUI textMeshProUGUI;
     public bool isShooText;
     public string nuwText;
+    public int num;
+
     void Start()
     {
         
@@ -16,7 +18,7 @@ public class Construct : MonoBehaviour
     
     void Update()
     {
-        if (isShooText)
+        if (isShooText && num > 2 || num == 2)
         {
             textMeshProUGUI.text = nuwText; 
         }
