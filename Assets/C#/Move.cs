@@ -134,7 +134,7 @@ public class Move : MonoBehaviour
     }
 
     // ћетод дл€ определени€, находитс€ ли персонаж на земле
-    void OnCollisionEnter(Collision collision)
+    void OnCollisionStay(Collision collision)
     {
         foreach (ContactPoint contact in collision.contacts)
         {
