@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class TriggerTest : MonoBehaviour
 {
-    public GameObject gameObjectEnemy;
-    public Transform transformEnemy;
+    public Animator A;
     private void OnTriggerEnter(Collider other)
     {
-        gameObjectEnemy.SetActive(true);
-        transformEnemy.localScale = new Vector3(3,3,3);
+        A.Play("Cube Animation");
     }
     private void OnTriggerStay(Collider other)
     {
@@ -17,6 +15,6 @@ public class TriggerTest : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        transformEnemy.localScale = new Vector3(1,1,1);
+        
     }
 }
