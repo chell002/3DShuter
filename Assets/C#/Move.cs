@@ -6,7 +6,9 @@ public class Move : MonoBehaviour
 
     // Публичные переменные для настройки в инспекторе Unity
     public Transform cameraTransform; // Перетащите сюда Transform объекта камеры
+    CharAnim anim;
     Transform tr;
+    private Rigidbody rb;
     public float moveSpeed = 5f;
     public float runSpeed = 5f;
     public float sprintSpeed = 8f;
@@ -17,25 +19,23 @@ public class Move : MonoBehaviour
     public float intervalForce = 3f;
 
     // Приватные переменные
-    private Rigidbody rb;
+    
     private bool isGrounded;
     bool isSprint;
     private float timeFoce = 0.5f;
-    private bool isSlider;
     public float speed = 20;
     public float rotate = 45;
+    private bool isSlider;
     private float lastClickTime;
     private float doubleClickThreshold = 0.3f;
 
     private void Awake()
     {
         tr = GetComponent<Transform>();
-    }
-    void Start()
-    {
-        // Получаем ссылку на компонент Rigidbody
         rb = GetComponent<Rigidbody>();
+        anim = GetComponent<CharAnim>();
     }
+    
 
     // Этот метод вызывается каждый кадр и предназначен для обработки ввода
     void Update()
@@ -51,6 +51,8 @@ public class Move : MonoBehaviour
         // Получаем ввод с клавиатуры
         // Создаем вектор, основанный на вводе, но в плоскости мира (без учета вращения)
         Vector3 movementInput = InputAxis();
+        bool isShift = Input.GetKey(KeyCode.LeftShift);
+        anim.PlayPersonAnim(movementInput, isShift);
 
         // Получаем вектор направления камеры, игнорируя ее наклон по оси Y
         // Vector3.ProjectOnPlane проецирует вектор на плоскость, нормаль которой Vector3.up
