@@ -10,6 +10,15 @@ public class CharAnim : MonoBehaviour
     {
         anim = GetComponentInChildren<Animator>();
     }
+    public void Aim(bool isAim)
+    {
+        anim.SetBool("AimBool", isAim);
+    }
+    public void JampAnim()
+    {
+        anim.SetTrigger("JampTrigger");
+    }
+    
     public void PlayPersonAnim(Vector3 m_Input, bool isRunning)
     {
         float animationSpeed = isRunning ? 1 : 0.5f;

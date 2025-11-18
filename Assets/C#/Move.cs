@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using System;
 using UnityEngine;
+using UnityEngine.Animations;
 public class Move : MonoBehaviour
 {
 
@@ -44,6 +45,13 @@ public class Move : MonoBehaviour
         Jamping();
         ResetForce();
         TimeForce();
+        if (Input.GetKey(KeyCode.Space)) 
+        {
+            anim.JampAnim();
+        }
+
+        anim.Aim(Input.GetMouseButton(1));
+       
     }
     // Этот метод вызывается на фиксированном временном интервале для физических расчетов
     void FixedUpdate()
