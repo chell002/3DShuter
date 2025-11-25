@@ -2,6 +2,16 @@ using UnityEngine;
 
 public class ThirdPersonCamera : MonoBehaviour
 {
+    void Start()
+    {
+
+        // —крываем курсор мыши и блокируем его в центре экрана
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+}
+public class CastCam : MonoBehaviour
+{
     // ѕубличные переменные дл€ настройки в инспекторе
     public Transform target; // —юда нужно перетащить объект персонажа
     public float mouseSensitivity = 2f;
@@ -31,7 +41,7 @@ public class ThirdPersonCamera : MonoBehaviour
     void LateUpdate()
     {
         // ”правление вращением камеры с помощью мыши
-        
+
 
         FollowCamera();
 
@@ -61,4 +71,5 @@ public class ThirdPersonCamera : MonoBehaviour
 
         return new Vector3(rotationY, rotationX, 0);
     }
+
 }
